@@ -7,6 +7,10 @@ checkEnvVariables()
  */
 const nextConfig = {
   reactStrictMode: true,
+  allowedDevOrigins: [
+    '70.34.196.51',
+     'localhost'
+  ],
   logging: {
     fetches: {
       fullUrl: true,
@@ -37,7 +41,7 @@ const nextConfig = {
         hostname: "medusa-server-testing.s3.us-east-1.amazonaws.com",
       },
     ],
-  },
+  }
 }
 
 module.exports = nextConfig

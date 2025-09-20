@@ -12,105 +12,122 @@ export default async function Footer() {
   const productCategories = await listCategories()
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
+    <footer className="bg-white border-t border-ui-border-base w-full">
       <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
-            >
-              Knitted for You footer
-            </LocalizedClientLink>
-          </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {productCategories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return
-                    }
+        <div className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              
+              {/* Logo and Brand Column */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  {/* Replace with your actual logo */}
+                  <img src="/images/logo.png" alt="Logo" className="w-8 h-8" />
+                  <LocalizedClientLink
+                    href="/"
+                    className="text-lg font-medium text-gray-800 hover:text-ui-fg-base"
+                  >
+                    Knitted for You
+                  </LocalizedClientLink>
+                </div>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p>Medusa mediq is a community for</p>
+                  <p>discussing, sharing inspiring needs</p>
+                  <p>and finding creative people worldwide.</p>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <LocalizedClientLink 
+                    href="/about" 
+                    className="text-teal-500 hover:underline block"
+                  >
+                    About us
+                  </LocalizedClientLink>
+                  <LocalizedClientLink 
+                    href="/contact" 
+                    className="text-teal-500 hover:underline block"
+                  >
+                    Contact us
+                  </LocalizedClientLink>
+                </div>
+              </div>
 
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
+              {/* Categories Column */}
+              {productCategories && productCategories?.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide">
+                    CATEGORIES
+                  </h3>
+                  <ul className="space-y-1 text-sm text-gray-600" data-testid="footer-categories">
+                    {productCategories?.slice(0, 6).map((c) => {
+                      if (c.parent_category) {
+                        return
+                      }
 
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
+                      return (
+                        <li key={c.id}>
+                          <LocalizedClientLink
+                            className="hover:text-gray-800 transition-colors"
+                            href={`/categories/${c.handle}`}
+                            data-testid="category-link"
+                          >
+                            {c.name}
+                          </LocalizedClientLink>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )}
+
+              {/* Collections Column */}
+              {collections && collections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide">
+                    COLLECTIONS
+                  </h3>
+                  <ul className="space-y-1 text-sm text-gray-600">
+                    {collections?.slice(0, 6).map((c) => (
+                      <li key={c.id}>
                         <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
+                          className="hover:text-gray-800 transition-colors"
+                          href={`/collections/${c.handle}`}
                         >
-                          {c.name}
+                          {c.title}
                         </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
                       </li>
-                    )
-                  })}
-                </ul>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Follow Us Column */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide">
+                  FOLLOW US
+                </h3>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <a href="#" className="hover:text-blue-600 cursor-pointer block transition-colors">
+                    Facebook
+                  </a>
+                  <a href="#" className="hover:text-blue-400 cursor-pointer block transition-colors">
+                    Twitter
+                  </a>
+                  <a href="#" className="hover:text-pink-500 cursor-pointer block transition-colors">
+                    Instagram
+                  </a>
+                  <a href="#" className="hover:text-red-500 cursor-pointer block transition-colors">
+                    YouTube
+                  </a>
+                </div>
               </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
-                >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
+
+            </div>
           </div>
         </div>
+
+        {/* Optional: Add MedusaCTA if you want to keep it */}
+        {/* <MedusaCTA /> */}
+        
       </div>
     </footer>
   )
