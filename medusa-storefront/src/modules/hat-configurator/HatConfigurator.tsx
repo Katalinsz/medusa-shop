@@ -4,6 +4,8 @@
 import { Button } from "./components/button";
 import { Card, CardContent } from "./components/card";
 import { useState } from "react";
+import { createHash } from "crypto"; // if client-only, just use a UUID
+import { addLineItem } from '../../lib/medusa/cart-client'
 
 const HAT_MODELS = [
   { name: "simpleHat", tagline: "simpleHatTagline", image: "/Img/EnkelSvartvitBeanieIllustration.png" },
@@ -233,11 +235,15 @@ function MultiSelectStep({ info, title, options, selected, onToggle, t }: { info
 }
 
 function SummaryStep({
+  variantId,
   model,
   warmth,
   colors,
+  url,
   t
 }: {
+  variantId: any;
+  url:any; 
   info: string;
   model: string;
   warmth: string;
@@ -252,6 +258,76 @@ function SummaryStep({
   const [selectedImageForPopup, setSelectedImageForPopup] = useState<string | null>(null);
   const [tier, setTier] = useState<"basic"|"plus"|"pro">("basic");
   const [email, setEmail] = useState("");
+
+  function makePatternId({ model, warmth, colors, imageUrl }: any) {
+    // simple UUID is fine; a hash keeps it reproducible if you prefer
+    const raw = JSON.stringify({ model, warmth, colors, imageUrl });
+    // fallback to random if no crypto
+    return "hat-" + Math.random().toString(16).slice(2);
+  }
+
+  const handleAdd = async () => {
+    await addLineItem(variantId, {
+      patternId: /* your makePatternId(...) */ 'hat-abc',
+      config: { model, warmth, colors },
+      url,
+    })
+  }
+
+  async function startCheckout() {
+    const patternId = "12"; /* from Step 1 */;
+    const selectedImage = selectedForOrder?.image ?? imageUrls[0] ?? null;
+
+    // 1) lookup
+    const look = await fetch(`/api/pattern/lookup?patternId=${encodeURIComponent(patternId)}`).then(r => r.json());
+
+    // 2) call checkout
+    const res = await fetch("/api/pattern/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productType: "hat",
+        email,
+        config: { model, warmth, colors, patternId },
+        selectedImage,
+        // If promoted: charge product price; else: 40 kr
+        variantId: look.found ? look.variantId : null,
+      }),
+    });
+
+    const { clientSecret, cartId } = await res.json();
+    // proceed with Stripe confirmPayment(...) as you already do
+  }
+
+  async function ensureCart(): Promise<string> {
+    let cartId = localStorage.getItem("cart_id");
+    if (cartId) return cartId;
+
+    const res = await fetch("/api/pattern/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ /* no cartId → route creates one */ }),
+    });
+    const data = await res.json();
+    cartId = data.createdCartId;
+    localStorage.setItem("cart_id", cartId);
+    return cartId!;
+  }
+
+  async function addGeneratedPatternToCart({
+    email, patternId, config, imageUrl
+  }: {
+    email?: string; patternId: string; config: any; imageUrl?: string | null;
+  }) {
+    const cartId = await ensureCart();
+    await fetch("/api/pattern/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cartId, email, patternId, config, imageUrl }),
+    });
+    // navigate user to your existing cart page
+    window.location.href = "/cart"; // or `/${countryCode}/cart`
+  }
 
   const handleBuyPattern = async () => {
     setLoading(true);
@@ -335,9 +411,9 @@ function SummaryStep({
       const prompt = `High quality product photo of a ${model} knitted winter hat, suitable for ${warmth}, in the colors ${colors.join(", ")}, shown in a Scandinavian style studio setting.`;
 
       try {
-        const response = ['ExImages/Hat-tamBeret-standardWinter-red-yellow-Knitted-1758256186037-0.png-0.png',
-             'ExImages/Hat-tamBeret-standardWinter-red-yellow-Knitted-1758256186056-0.png-0.png',
-             'ExImages/Hat-tamBeret-standardWinter-yellow-Knitted-1758256186858-0.png-0.png'];
+        const response = ['http://70.34.196.51:8000/ExImages/Hat-tamBeret-standardWinter-red-yellow-Knitted-1758256186037-0.png-0.png',
+             'http://70.34.196.51:8000/ExImages/Hat-tamBeret-standardWinter-red-yellow-Knitted-1758256186056-0.png-0.png',
+             'http://70.34.196.51:8000/ExImages/Hat-tamBeret-standardWinter-yellow-Knitted-1758256186858-0.png-0.png'];
         /*await fetch("http://140.82.58.69:3001/generate-image", { // "http://localhost:3001/generate-image", {
         // const response = await fetch("http://localhost:3001/generate-image", { ez is comment
           method: "POST",
@@ -357,6 +433,8 @@ function SummaryStep({
         console.log(data);
         setImageUrls(prev => [...data.images, ...prev]); */
         setImageUrls(prev => [...response, ...prev]);
+        // after you receive generated images:
+        const patternId = makePatternId({ model, warmth, colors, imageUrl: imageUrls[0] });
       } catch (err) {
         console.error("Image generation failed", err);
       } finally {
@@ -401,39 +479,25 @@ function SummaryStep({
                 >
                   {t("orderPattern")}
                 </button>
-                {/* Pattern purchase panel */}
-<div className="mt-6 grid gap-3">
-  <label className="text-sm font-medium">{t("priceTier")}</label>
-  <select
-    value={tier}
-    onChange={(e) => setTier(e.target.value as any)}
-    className="border rounded p-2"
-  >
-    <option value="basic">{t("Basic")} – 40 kr</option>
-    <option value="plus">{t("Plus")} – 79 kr</option>
-    <option value="pro">{t("Pro")} – 119 kr</option>
-  </select>
-
-  <label className="text-sm font-medium mt-2">{t("emailForDelivery")}</label>
-  <input
-    type="email"
-    className="border rounded p-2"
-    placeholder="you@example.com"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    required
-  />
-
-  <Button onClick={handleBuyPattern} disabled={loading || !email}>
-    {loading ? t("processing") : t("buyPatternNow")}
-  </Button>
-</div>
                 <button
+                  onClick={() => addGeneratedPatternToCart({
+                      patternId: makePatternId({ model, warmth, colors, url }),
+                      config: { model, warmth, colors },
+                      imageUrl: url
+                    })}
+                  className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"
+                >
+                  {t("orderPattern")}
+                </button>
+                <button onClick={handleAdd} className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded">
+                  Add to cart
+                </button>
+                {/*<!--button
                   onClick={() => setSelectedForOrder({ type: 'product', image: url })}
                   className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"
                 >
                   {t("orderReadyKnitted")}
-                </button>
+                </button>*/}
               </div>
             </div>
           ))}
@@ -489,5 +553,5 @@ function SummaryStep({
         </div>
       )}
     </div>
-  );
+  )
 }

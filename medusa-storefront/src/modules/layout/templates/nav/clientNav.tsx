@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react"
 export default function ClientNavWithMedusa() {
   
   const logo = "/images/logo.png"
-  const bgPattern = "/images/img.webp"
+  const bgPattern = "https://motif.knittedforyou.com/1598-knitting_chart/o.jpg"
 
   const [isOpen, setIsOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -73,6 +73,13 @@ export default function ClientNavWithMedusa() {
                   </LocalizedClientLink>
                 </li>
               ))}
+              <li>
+                <LocalizedClientLink
+                  href="/design-your-hat" 
+                  className="hover:text-green-600 transition-colors">
+                    {"Hat patterns "} 
+                </LocalizedClientLink>
+              </li>
               <li className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -97,18 +104,13 @@ export default function ClientNavWithMedusa() {
                 )}
               </li>
               <li>
-                <Suspense
-                  fallback={
-                    <LocalizedClientLink
-                      href="/"
+                <LocalizedClientLink
+                      href="/cart"
                       className="hover:text-ui-fg-base flex gap-2"
-                    >
-                      Cart (0)
-                    </LocalizedClientLink>
-                  }
-                >
-                  <CartButton />
-                </Suspense>
+               >
+                      {"Cart"}
+                </LocalizedClientLink>
+               
               </li>
             </ul>
           </nav>
