@@ -2346,7 +2346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/auth@npm:2.10.3":
+"@medusajs/auth@npm:2.10.3, @medusajs/auth@npm:^2.10.3":
   version: 2.10.3
   resolution: "@medusajs/auth@npm:2.10.3"
   peerDependencies:
@@ -12423,6 +12423,7 @@ __metadata:
   resolution: "medusa-backend@workspace:."
   dependencies:
     "@medusajs/admin-sdk": 2.10.2
+    "@medusajs/auth": ^2.10.3
     "@medusajs/cli": ^2.10
     "@medusajs/framework": 2.10.2
     "@medusajs/medusa": ^2.10

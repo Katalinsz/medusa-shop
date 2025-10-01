@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.10.2",
+    "@medusajs/auth": "^2.10.3",
     "@medusajs/framework": "2.10.2",
     "@medusajs/medusa": "^2.10",
     "@medusajs/modules-sdk": "^2.10",

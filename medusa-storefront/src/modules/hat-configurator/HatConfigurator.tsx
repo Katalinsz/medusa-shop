@@ -4,8 +4,11 @@
 import { Button } from "./components/button";
 import { Card, CardContent } from "./components/card";
 import { useState } from "react";
-import { createHash } from "crypto"; // if client-only, just use a UUID
-import { addLineItem } from '../../lib/medusa/cart-client'
+import { useRouter } from "next/navigation"
+
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_URL ?? "http://70.34.196.51:9000" //"http://localhost:9000"
+const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY! // required in v2
+
 
 const HAT_MODELS = [
   { name: "simpleHat", tagline: "simpleHatTagline", image: "/Img/EnkelSvartvitBeanieIllustration.png" },
@@ -47,7 +50,7 @@ export default function HatConfigurator({
   const [model, setModel] = useState("");
   const [warmth, setWarmth] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
- 
+  
   const toggleSelection = (value: string, list: string[], setList: (val: string[]) => void) => {
     if (list.includes(value)) {
       setList(list.filter((item) => item !== value));
@@ -256,8 +259,39 @@ function SummaryStep({
   const [selectedForOrder, setSelectedForOrder] = useState<null | { type: "pattern" | "product"; image: string }>(null);
   const [orderMessage, setOrderMessage] = useState("");
   const [selectedImageForPopup, setSelectedImageForPopup] = useState<string | null>(null);
-  const [tier, setTier] = useState<"basic"|"plus"|"pro">("basic");
-  const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  async function getOrCreateCartId() {
+    let id = "cart_01K658VZKMZ6A885GXC80T66EK" //localStorage.getItem("cart_id")
+    console.log("Current cart id:", id);
+    if (id !== "undefined") return id
+console.log("Creating new cart");
+    const res = await fetch(`${MEDUSA_URL}/store/carts`, {
+      method: "POST",
+      headers: { "x-publishable-api-key": PUBLISHABLE_KEY, "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({}) // optionally include region_id / sales_channel_id
+    })
+    console.log("Create cart response:", res);
+    const data = await res.json()
+    id = data.cart.id
+    localStorage.setItem("cart_id", id)
+    return id
+  }
+
+  async function addToCart(variantId: string, qty = 1) {
+    const cartId = await getOrCreateCartId()
+console.log("Adding to cart:", { cartId, variantId, qty });
+    const res = await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items`, {
+      method: "POST",
+      headers: { "x-publishable-api-key": PUBLISHABLE_KEY, "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ variant_id: variantId, quantity: qty })
+    })
+    if (!res.ok) throw new Error("Failed to add to cart")
+    return res.json() // contains the updated cart
+  }
+
 
   function makePatternId({ model, warmth, colors, imageUrl }: any) {
     // simple UUID is fine; a hash keeps it reproducible if you prefer
@@ -265,113 +299,7 @@ function SummaryStep({
     // fallback to random if no crypto
     return "hat-" + Math.random().toString(16).slice(2);
   }
-
-  const handleAdd = async () => {
-    await addLineItem(variantId, {
-      patternId: /* your makePatternId(...) */ 'hat-abc',
-      config: { model, warmth, colors },
-      url,
-    })
-  }
-
-  async function startCheckout() {
-    const patternId = "12"; /* from Step 1 */;
-    const selectedImage = selectedForOrder?.image ?? imageUrls[0] ?? null;
-
-    // 1) lookup
-    const look = await fetch(`/api/pattern/lookup?patternId=${encodeURIComponent(patternId)}`).then(r => r.json());
-
-    // 2) call checkout
-    const res = await fetch("/api/pattern/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productType: "hat",
-        email,
-        config: { model, warmth, colors, patternId },
-        selectedImage,
-        // If promoted: charge product price; else: 40 kr
-        variantId: look.found ? look.variantId : null,
-      }),
-    });
-
-    const { clientSecret, cartId } = await res.json();
-    // proceed with Stripe confirmPayment(...) as you already do
-  }
-
-  async function ensureCart(): Promise<string> {
-    let cartId = localStorage.getItem("cart_id");
-    if (cartId) return cartId;
-
-    const res = await fetch("/api/pattern/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ /* no cartId → route creates one */ }),
-    });
-    const data = await res.json();
-    cartId = data.createdCartId;
-    localStorage.setItem("cart_id", cartId);
-    return cartId!;
-  }
-
-  async function addGeneratedPatternToCart({
-    email, patternId, config, imageUrl
-  }: {
-    email?: string; patternId: string; config: any; imageUrl?: string | null;
-  }) {
-    const cartId = await ensureCart();
-    await fetch("/api/pattern/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cartId, email, patternId, config, imageUrl }),
-    });
-    // navigate user to your existing cart page
-    window.location.href = "/cart"; // or `/${countryCode}/cart`
-  }
-
-  const handleBuyPattern = async () => {
-    setLoading(true);
-    try {
-      // pick an image; fall back to first generated image
-      const imageForOrder = selectedForOrder?.image ?? imageUrls[0] ?? null;
-
-      const res = await fetch("/api/pattern/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productType: "hat",                // later: "sweater" | "cardigan" | "mittens"
-          tier,                              // "basic" | "plus" | "pro"
-          email,
-          config: { model, warmth, colors }, // your configurator data
-          selectedImage: imageForOrder,      // ok to be null
-        }),
-      });
-
-      if (!res.ok) throw new Error("Checkout init failed");
-      const { clientSecret, cartId } = await res.json();
-
-      // ---- Stripe Payment Element flow (client-side) ----
-      // Assuming you've set up stripe.js and <Elements> higher in your tree:
-      const stripe = (window as any).stripe; // or use the Stripe object from your context
-      const elements = (window as any).stripeElements; // your mounted <Elements/>
-      // If you don't already mount Elements, render a modal with <PaymentElement clientSecret={clientSecret} />
-
-      const { error } = await stripe.confirmPayment({
-        elements,
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/checkout/success?cart_id=${cartId}`,
-        },
-      });
-      if (error) alert(error.message);
-    } catch (e) {
-      console.error(e);
-      alert(t("somethingWentWrong"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
   const handleSendOrder = async () => {
     const payload = {
       type: selectedForOrder?.type,
@@ -442,6 +370,16 @@ function SummaryStep({
       }
   };
 
+  async function viewProduct({ url }: { url: string }) {
+    try {
+      router.push(`/products/knittedhatpattern?url=${url}`);
+    } catch (e) {
+      console.error(e)
+      // Optionally show a toast here
+    }
+   console.log("view product", url);
+  }
+
   return (
     <div className="w-full max-w-3xl mx-auto text-center space-y-6">
 
@@ -474,24 +412,13 @@ function SummaryStep({
 
               <div className="px-4 space-y-2">
                 <button
-                  onClick={() => setSelectedForOrder({ type: 'pattern', image: url })}
+                  onClick={() => viewProduct({ url })}
                   className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"
                 >
                   {t("orderPattern")}
                 </button>
-                <button
-                  onClick={() => addGeneratedPatternToCart({
-                      patternId: makePatternId({ model, warmth, colors, url }),
-                      config: { model, warmth, colors },
-                      imageUrl: url
-                    })}
-                  className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"
-                >
-                  {t("orderPattern")}
-                </button>
-                <button onClick={handleAdd} className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded">
-                  Add to cart
-                </button>
+               
+              
                 {/*<!--button
                   onClick={() => setSelectedForOrder({ type: 'product', image: url })}
                   className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"

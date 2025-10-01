@@ -1,5 +1,5 @@
 // medusa.config.ts
-import { loadEnv, defineConfig } from "@medusajs/framework/utils"
+import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys  } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
@@ -23,6 +23,22 @@ export default defineConfig({
   // ⬇️ Add modules here
   modules: [
     {
+      resolve: "@medusajs/medusa/auth",
+      dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+      options: {
+        // If you’re overriding providers, make sure emailpass is present:
+        providers: [
+          {
+            resolve: "@medusajs/medusa/auth-emailpass",
+            id: "emailpass",
+            options: {
+              // e.g. hashConfig overrides if you use them
+            },
+          },
+        ],
+      },
+    },
+    {
       // Payment module (v2 way)
       resolve: "@medusajs/medusa/payment",
       options: {
@@ -39,6 +55,6 @@ export default defineConfig({
           },
         ],
       },
-    },
+    }
   ],
 })
