@@ -4,8 +4,7 @@
 import { Button } from "./components/button";
 import { Card, CardContent } from "./components/card";
 import { useState } from "react";
-import { createHash } from "crypto"; // if client-only, just use a UUID
-import { addLineItem } from '../../lib/medusa/cart-client'
+import { useRouter } from "next/navigation"
 
 const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_URL ?? "http://70.34.196.51:9000" //"http://localhost:9000"
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY! // required in v2
@@ -51,7 +50,7 @@ export default function HatConfigurator({
   const [model, setModel] = useState("");
   const [warmth, setWarmth] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
- 
+  
   const toggleSelection = (value: string, list: string[], setList: (val: string[]) => void) => {
     if (list.includes(value)) {
       setList(list.filter((item) => item !== value));
@@ -260,7 +259,8 @@ function SummaryStep({
   const [selectedForOrder, setSelectedForOrder] = useState<null | { type: "pattern" | "product"; image: string }>(null);
   const [orderMessage, setOrderMessage] = useState("");
   const [selectedImageForPopup, setSelectedImageForPopup] = useState<string | null>(null);
- 
+  const router = useRouter();
+
   async function getOrCreateCartId() {
     let id = "cart_01K658VZKMZ6A885GXC80T66EK" //localStorage.getItem("cart_id")
     console.log("Current cart id:", id);
@@ -370,6 +370,16 @@ console.log("Adding to cart:", { cartId, variantId, qty });
       }
   };
 
+  async function viewProduct({ url }: { url: string }) {
+    try {
+      router.push(`/products/knittedhatpattern?url=${url}`);
+    } catch (e) {
+      console.error(e)
+      // Optionally show a toast here
+    }
+   console.log("view product", url);
+  }
+
   return (
     <div className="w-full max-w-3xl mx-auto text-center space-y-6">
 
@@ -402,7 +412,7 @@ console.log("Adding to cart:", { cartId, variantId, qty });
 
               <div className="px-4 space-y-2">
                 <button
-                  onClick={() => addToCart("variant_01K6E0D6Q364BMNM9CB6M1WYXD", 1)}
+                  onClick={() => viewProduct({ url })}
                   className="w-full bg-[#12725c] text-white text-sm font-medium py-2 px-3 rounded"
                 >
                   {t("orderPattern")}

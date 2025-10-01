@@ -42,6 +42,13 @@ const nextConfig = {
         port: "8000",
         pathname: '/ExImages/**',
       },
+      {
+        protocol: "http",
+        hostname: "140.82.58.69",
+        port: "3000",
+        pathname: '/api/images/**',
+      },
+    
     ],
   }
 }

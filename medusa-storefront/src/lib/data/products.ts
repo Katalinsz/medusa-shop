@@ -63,7 +63,10 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags,*categories", // use lowercase `fields`
+          //expand:
+            // categories/tags for your template switch; variants/images for PDP
+            //"categories,tags,variants,images",
           ...queryParams,
         },
         headers,
