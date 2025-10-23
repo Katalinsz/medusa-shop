@@ -123,3 +123,27 @@ You'll also need to setup the integrations in your Medusa server. See the [Medus
 - [Website](https://nextjs.org/)
 - [GitHub](https://github.com/vercel/next.js)
 - [Documentation](https://nextjs.org/docs)
+
+## CMS pages (Sanity)
+
+This storefront can render static content pages (About us, Terms & Conditions, Cookie Policy, etc.) from Sanity.
+
+1. Ensure the following env variables are set (see `.env.example`):
+
+  - `SANITY_PROJECT_ID`
+  - `SANITY_DATASET`
+  - `SANITY_API_VERSION`
+
+2. In the Studio (`studio-knitted-for-you-cms`), create documents of type `Page` with slugs like:
+
+  - `about`
+  - `terms`
+  - `cookie-policy`
+
+3. Access the pages at:
+
+  - `/{countryCode}/content/about`
+  - `/{countryCode}/content/terms`
+  - `/{countryCode}/content/cookie-policy`
+
+Portable Text content is rendered with sensible defaults; adjust styles in `src/components/cms/PortableText.tsx` as needed.

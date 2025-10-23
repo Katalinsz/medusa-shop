@@ -7,6 +7,16 @@ const requiredEnvs = [
     description:
       "Learn how to create a publishable key: https://docs.medusajs.com/v2/resources/storefront-development/publishable-api-keys",
   },
+  {
+    key: "SANITY_PROJECT_ID",
+    description:
+      "Sanity project ID (from sanity.config.ts or your Sanity manage project).",
+  },
+  {
+    key: "SANITY_DATASET",
+    description:
+      "Sanity dataset name (e.g. 'production').",
+  },
 ]
 
 function checkEnvVariables() {
