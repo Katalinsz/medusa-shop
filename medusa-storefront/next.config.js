@@ -37,6 +37,10 @@ const nextConfig = {
         hostname: "medusa-server-testing.s3.amazonaws.com",
       },
       {
+        protocol: "https",
+        hostname: "motif.knittedforyou.com",
+      },
+      {
         protocol: "http",
         hostname: "70.34.196.51",
         port: "8000",
