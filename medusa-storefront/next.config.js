@@ -7,10 +7,7 @@ checkEnvVariables()
  */
 const nextConfig = {
   reactStrictMode: true,
-  allowedDevOrigins: [
-    '70.34.196.51',
-     'localhost'
-  ],
+  allowedDevOrigins: ["70.34.196.51", "localhost"],
   logging: {
     fetches: {
       fullUrl: true,
@@ -40,17 +37,22 @@ const nextConfig = {
         protocol: "http",
         hostname: "70.34.196.51",
         port: "8000",
-        pathname: '/ExImages/**',
+        pathname: "/ExImages/**",
       },
       {
         protocol: "http",
         hostname: "140.82.58.69",
         port: "3000",
-        pathname: '/api/images/**',
+        pathname: "/api/images/**",
       },
-    
+      // ADD THIS NEW ENTRY FOR THE MISSING DOMAIN
+      {
+        protocol: "https",
+        hostname: "motif.knittedforyou.com",
+        pathname: "/**",
+      },
     ],
-  }
+  },
 }
 
 module.exports = nextConfig
