@@ -7,9 +7,12 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import MotifLibrary from "@modules/motif-library/templates/page"
 import { HttpTypes } from "@medusajs/types"
+import { listProducts } from "@lib/data/products"
+import { getRegion } from "@lib/data/regions"
 
-export default function CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   sortBy,
   page,
@@ -25,6 +28,41 @@ export default function CategoryTemplate({
 
   if (!category || !countryCode) notFound()
 
+  // Check if this is the motif category
+  const isMotifCategory = category.handle === "motif"
+
+  // If it's motif category, fetch all products and use custom layout
+  if (isMotifCategory) {
+    // Get region first
+    const region = await getRegion(countryCode)
+
+    if (!region) {
+      notFound()
+    }
+
+    // Fetch products for this category using category handle
+    const { response } = await listProducts({
+      countryCode,
+      queryParams: {
+        limit: 100,
+      },
+    })
+
+    // Filter products by category manually
+    const categoryProducts = response.products.filter((product) =>
+      product.categories?.some((cat) => cat.id === category.id)
+    )
+
+    return (
+      <MotifLibrary
+        products={categoryProducts}
+        region={region}
+        countryCode={countryCode}
+      />
+    )
+  }
+
+  // Default category layout for other categories
   const parents = [] as HttpTypes.StoreProductCategory[]
 
   const getParents = (category: HttpTypes.StoreProductCategory) => {

@@ -3,10 +3,9 @@
 import React, { useState, useRef, useEffect, Suspense } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Sparkles } from "lucide-react"
 
 export default function ClientNavWithMedusa() {
-  
   const logo = "/images/logo.png"
   const bgPattern = "https://motif.knittedforyou.com/1598-knitting_chart/o.jpg"
 
@@ -23,7 +22,10 @@ export default function ClientNavWithMedusa() {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false)
       }
     }
@@ -63,23 +65,47 @@ export default function ClientNavWithMedusa() {
             ref={dropdownRef}
           >
             <ul className="flex gap-8 text-gray-800 font-medium items-center">
-              {["Home", "Library", "Create Motive"].map((item) => (
-                <li key={item}>
-                  <LocalizedClientLink
-                    href="/"
-                    className="hover:text-green-600 transition-colors"
-                  >
-                    {item}
-                  </LocalizedClientLink>
-                </li>
-              ))}
+              {/* Home Link */}
               <li>
                 <LocalizedClientLink
-                  href="/design-your-hat" 
-                  className="hover:text-green-600 transition-colors">
-                    {"Hat patterns "} 
+                  href="/"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  Home
                 </LocalizedClientLink>
               </li>
+
+              {/* Motif Library Link - Featured */}
+              <li>
+                <LocalizedClientLink
+                  href="/categories/motif"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  <span>Library</span>
+                </LocalizedClientLink>
+              </li>
+
+              {/* Create Motive Link */}
+              <li>
+                <LocalizedClientLink
+                  href="/"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  Create Motive
+                </LocalizedClientLink>
+              </li>
+
+              {/* Hat Patterns Link */}
+              <li>
+                <LocalizedClientLink
+                  href="/design-your-hat"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  Hat patterns
+                </LocalizedClientLink>
+              </li>
+
+              {/* Login Dropdown */}
               <li className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -103,14 +129,15 @@ export default function ClientNavWithMedusa() {
                   </ul>
                 )}
               </li>
+
+              {/* Cart Link */}
               <li>
                 <LocalizedClientLink
-                      href="/cart"
-                      className="hover:text-ui-fg-base flex gap-2"
-               >
-                      {"Cart"}
+                  href="/cart"
+                  className="hover:text-green-600 flex gap-2 transition-colors"
+                >
+                  Cart
                 </LocalizedClientLink>
-               
               </li>
             </ul>
           </nav>
@@ -141,16 +168,46 @@ export default function ClientNavWithMedusa() {
           }`}
         >
           <div className="px-6 py-4 space-y-4 w-full">
-            {["Home", "Library", "Create Motive"].map((item) => (
+            {/* Home Link */}
+            <LocalizedClientLink
+              href="/"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Home
+            </LocalizedClientLink>
+
+            {/* Motif Library Link - Featured in Mobile */}
+            <div className="flex justify-center">
               <LocalizedClientLink
-                key={item}
-                href="/"
-                className="block text-gray-800 hover:text-green-600 py-2 text-center"
+                href="/categories/motif"
+                className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded-full hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg font-semibold"
                 onClick={handleLinkClick}
               >
-                {item}
+                <Sparkles size={16} />
+                <span>Motif Library</span>
               </LocalizedClientLink>
-            ))}
+            </div>
+
+            {/* Create Motive Link */}
+            <LocalizedClientLink
+              href="/"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Create Motive
+            </LocalizedClientLink>
+
+            {/* Hat Patterns Link */}
+            <LocalizedClientLink
+              href="/design-your-hat"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Hat patterns
+            </LocalizedClientLink>
+
+            {/* Login Dropdown */}
             <div className="relative flex justify-center">
               <button
                 onClick={toggleDropdown}
@@ -173,6 +230,15 @@ export default function ClientNavWithMedusa() {
                 </div>
               )}
             </div>
+
+            {/* Cart Link */}
+            <LocalizedClientLink
+              href="/cart"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Cart
+            </LocalizedClientLink>
           </div>
         </nav>
       </div>
