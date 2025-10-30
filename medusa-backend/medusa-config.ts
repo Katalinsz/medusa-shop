@@ -15,7 +15,7 @@ export default defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
     server: {
-      port: 9000,
+      port: 9001,
       host: "0.0.0.0",
     },
   },
