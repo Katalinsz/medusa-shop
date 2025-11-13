@@ -6,12 +6,30 @@ import Refresh from "@modules/common/icons/refresh"
 
 import Accordion from "./accordion"
 import { HttpTypes } from "@medusajs/types"
-
+import { createPDF } from "@lib/data/pdf"
+import { Toaster, toast } from "@medusajs/ui"
+import { FetchError } from "@medusajs/js-sdk"
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const handlePdfClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+
+    try {
+      await createPDF()
+    } catch (error) {
+      const fetchError = error as FetchError
+      if (fetchError.status === 401) {
+        toast.error("Please login to download the PDF")
+      } else {
+        console.error("PDF generation failed:", error)
+
+        toast.error("Failed to generate PDF")
+      }
+    }
+  }
   const tabs = [
     {
       label: "Product Information",
@@ -37,6 +55,20 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
           </Accordion.Item>
         ))}
       </Accordion>
+      <div className="text-medium-regular py-4 pl-1">
+        <p className="max-w-sm">
+          Download pdf{" "}
+          <a
+            href="#"
+            className="text-blue-500 underline"
+            onClick={handlePdfClick}
+          >
+            here
+          </a>
+          .
+        </p>
+      </div>
+      <Toaster />
     </div>
   )
 }
@@ -91,7 +123,6 @@ const ShippingInfoTab = () => {
           </div>
         </div>
         <div className="flex items-start gap-x-2">
-
           <FastDelivery />
           <div>
             <span className="font-semibold">Instant or Fast delivery</span>
