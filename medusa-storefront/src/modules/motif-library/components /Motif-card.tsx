@@ -33,6 +33,10 @@ export default function MotifCard({
   const width = (product.metadata?.width as string | number) || "N/A"
   const height = (product.metadata?.height as string | number) || "N/A"
 
+  // Calculate aspect ratio for flexible sizing
+  const aspectRatio =
+    typeof width === "number" && typeof height === "number" ? width / height : 1
+
   // Truncate description
   const description = product.description || ""
   const truncatedDescription =
@@ -55,11 +59,11 @@ export default function MotifCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image Container */}
+      {/* Image Container - Fixed height for uniform grid */}
       <Link
         href={`/products/${product.handle}`}
         className={`relative bg-gray-100 overflow-hidden ${
-          viewMode === "list" ? "w-48 flex-shrink-0" : "w-full aspect-square"
+          viewMode === "list" ? "w-48 flex-shrink-0" : "w-full h-64"
         }`}
       >
         <Image
@@ -71,7 +75,7 @@ export default function MotifCard({
               ? "192px"
               : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           }
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-contain transition-transform duration-500 group-hover:scale-110"
         />
 
         {/* Hover Overlay with Artist and Likes */}
