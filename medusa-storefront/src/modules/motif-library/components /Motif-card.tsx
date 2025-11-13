@@ -29,9 +29,9 @@ export default function MotifCard({
   // Get artist name from metadata
   const artistName = (product.metadata?.artist as string) || "Unknown Artist"
 
-  // Get dimensions
-  const width = (product.metadata?.width as string | number) || "N/A"
-  const height = (product.metadata?.height as string | number) || "N/A"
+  // Get dimensions - removed "N/A" fallback
+  const width = product.metadata?.width as string | number
+  const height = product.metadata?.height as string | number
 
   // Calculate aspect ratio for flexible sizing
   const aspectRatio =
@@ -114,10 +114,12 @@ export default function MotifCard({
           />
         </button>
 
-        {/* Dimensions Badge */}
-        <div className="absolute top-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-full">
-          {width}×{height}
-        </div>
+        {/* Dimensions Badge - only show if dimensions exist */}
+        {width && height && (
+          <div className="absolute top-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-full">
+            {width}×{height}
+          </div>
+        )}
       </Link>
 
       {/* Card Content */}
