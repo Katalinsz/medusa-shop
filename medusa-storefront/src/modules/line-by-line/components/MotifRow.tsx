@@ -23,7 +23,7 @@ const MotifRow: React.FC<MotifRowProps> = ({
 
   return (
     <div
-      className={`flex items-center p-1 cursor-pointer transition-colors ${
+      className={`flex items-center  cursor-pointer transition-colors ${
         isActive
           ? "bg-blue-50 border-2 border-blue-300 rounded-lg"
           : "hover:bg-gray-50 border border-transparent"
