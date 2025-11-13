@@ -130,7 +130,7 @@ export default function MotifLibrary({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen  from-emerald-50 via-white to-teal-50">
       {/* Search and Filters */}
       <SearchFilter
         searchQuery={searchQuery}
