@@ -1,6 +1,11 @@
-import { defineMiddlewares, authenticate, validateAndTransformBody } from "@medusajs/framework/http"
+import {
+  defineMiddlewares,
+  authenticate,
+  validateAndTransformBody,
+} from "@medusajs/framework/http";
 
-import { PostApiPatternAddSchema } from "./api/pattern/add/validators"
+import { PostApiPatternAddSchema } from "./api/pattern/add/validators";
+import { PostStorePdfSchema } from "./store/pdf/validators";
 
 export default defineMiddlewares({
   routes: [
@@ -11,5 +16,13 @@ export default defineMiddlewares({
       middlewares: [authenticate("user", ["bearer", "session"])],
       //validateAndTransformBody(PostApiPatternAddSchema)
     },
+    {
+      matcher: "/store/pdf",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(PostStorePdfSchema),
+        authenticate("customer", ["session", "bearer"]),
+      ],
+    },
   ],
-})
+});
