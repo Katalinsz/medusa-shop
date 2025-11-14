@@ -25,12 +25,32 @@ export default async function Footer() {
             Knitted motif is a platform for knitting, engaging sharing, and
             community-driven projects.
           </p>
-          <LocalizedClientLink
-            href="/about"
-            className="text-gray-600 text-sm hover:underline"
-          >
-            About
-          </LocalizedClientLink>
+          <ul className="space-y-2">
+            <li>
+              <LocalizedClientLink
+                href="/content/about"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                About
+              </LocalizedClientLink>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/privacy-policy"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Privacy Policy
+              </LocalizedClientLink>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/cookie-policy"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Cookie Policy
+              </LocalizedClientLink>
+            </li>
+          </ul>
         </div>
 
         {/* Social */}

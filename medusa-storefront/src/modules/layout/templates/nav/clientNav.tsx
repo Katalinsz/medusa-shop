@@ -106,6 +106,15 @@ export default function ClientNavWithMedusa() {
               </li>
 
               {/* Login Dropdown */}
+              <li>
+                <LocalizedClientLink
+                  href="/content/about"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  About
+                </LocalizedClientLink>
+              </li>
+
               <li className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -208,6 +217,27 @@ export default function ClientNavWithMedusa() {
             </LocalizedClientLink>
 
             {/* Login Dropdown */}
+            <LocalizedClientLink
+              href="/content/about"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              About
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/content/privacy-policy"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Privacy Policy
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/content/cookie-policy"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Cookie Policy
+            </LocalizedClientLink>
             <div className="relative flex justify-center">
               <button
                 onClick={toggleDropdown}
