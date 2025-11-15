@@ -3,6 +3,8 @@ import { getRegion } from "@lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
 import Product from "../product-preview"
 
+const MAX_RELATED_PRODUCTS = 4
+
 type RelatedProductsProps = {
   product: HttpTypes.StoreProduct
   countryCode: string
@@ -39,7 +41,7 @@ export default async function RelatedProducts({
   }).then(({ response }) => {
     return response.products.filter(
       (responseProduct) => responseProduct.id !== product.id
-    )
+    ).slice(0, MAX_RELATED_PRODUCTS)
   })
 
   if (!products.length) {

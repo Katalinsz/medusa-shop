@@ -35,16 +35,16 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           >
             {product.description}
           </Text>
-
-          {/* Simple Plus Button Link */}
+         </div>
+          {/* Line By Line Link */}
           <Link
             href="/line-by-line"
-            className="flex items-center justify-center w-8 h-8 bg-ui-bg-base hover:bg-ui-bg-base-hover   transition-all duration-200 hover:shadow-md hover:scale-110 flex-shrink-0"
+            className="flex  bg-ui-bg-base hover:bg-ui-bg-base-hover   transition-all duration-200 hover:shadow-md hover:scale-110 flex-shrink-0"
             title="View line by line"
           >
-            <Plus className="w-4 h-4" />
+            Check out the chart 
           </Link>
-        </div>
+       
       </div>
     </div>
   )
