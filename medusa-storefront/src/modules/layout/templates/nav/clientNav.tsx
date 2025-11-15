@@ -65,7 +65,7 @@ export default function ClientNavWithMedusa() {
             ref={dropdownRef}
           >
             <ul className="flex gap-8 text-gray-800 font-medium items-center">
-              {/* Home Link */}
+              {/* Home Link * /}
               <li>
                 <LocalizedClientLink
                   href="/"
@@ -73,9 +73,9 @@ export default function ClientNavWithMedusa() {
                 >
                   Home
                 </LocalizedClientLink>
-              </li>
+              </li>*/}
 
-              {/* Motif Library Link - Featured */}
+              {/* Motif Library Link - Featured * /}
               <li>
                 <LocalizedClientLink
                   href="/categories/motif"
@@ -83,9 +83,9 @@ export default function ClientNavWithMedusa() {
                 >
                   <span>Library</span>
                 </LocalizedClientLink>
-              </li>
+              </li>*/}
 
-              {/* Create Motive Link */}
+              {/* Create Motive Link * /}
               <li>
                 <LocalizedClientLink
                   href="/"
@@ -93,7 +93,7 @@ export default function ClientNavWithMedusa() {
                 >
                   Create Motive
                 </LocalizedClientLink>
-              </li>
+              </li>*/}
 
               {/* Hat Patterns Link */}
               <li>
@@ -105,7 +105,16 @@ export default function ClientNavWithMedusa() {
                 </LocalizedClientLink>
               </li>
 
-              {/* Login Dropdown */}
+              {/* Login Dropdown * /}
+              <li>
+                <LocalizedClientLink
+                  href="/content/about"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  About
+                </LocalizedClientLink>
+              </li>*/}
+
               <li className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -168,16 +177,16 @@ export default function ClientNavWithMedusa() {
           }`}
         >
           <div className="px-6 py-4 space-y-4 w-full">
-            {/* Home Link */}
+            {/* Home Link * /}
             <LocalizedClientLink
               href="/"
               className="block text-gray-800 hover:text-green-600 py-2 text-center"
               onClick={handleLinkClick}
             >
               Home
-            </LocalizedClientLink>
+            </LocalizedClientLink>* /}
 
-            {/* Motif Library Link - Featured in Mobile */}
+            {/* Motif Library Link - Featured in Mobile * /}
             <div className="flex justify-center">
               <LocalizedClientLink
                 href="/categories/motif"
@@ -187,16 +196,16 @@ export default function ClientNavWithMedusa() {
                 <Sparkles size={16} />
                 <span>Motif Library</span>
               </LocalizedClientLink>
-            </div>
+            </div> */}
 
-            {/* Create Motive Link */}
+            {/* Create Motive Link 
             <LocalizedClientLink
               href="/"
               className="block text-gray-800 hover:text-green-600 py-2 text-center"
               onClick={handleLinkClick}
             >
               Create Motive
-            </LocalizedClientLink>
+            </LocalizedClientLink>*/}
 
             {/* Hat Patterns Link */}
             <LocalizedClientLink
@@ -207,7 +216,29 @@ export default function ClientNavWithMedusa() {
               Hat patterns
             </LocalizedClientLink>
 
-            {/* Login Dropdown */}
+            {/* Login Dropdown * /}
+            <LocalizedClientLink
+              href="/content/about"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              About
+            </LocalizedClientLink> */}
+
+            <LocalizedClientLink
+              href="/content/privacy-policy"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Privacy Policy
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/content/cookie-policy"
+              className="block text-gray-800 hover:text-green-600 py-2 text-center"
+              onClick={handleLinkClick}
+            >
+              Cookie Policy
+            </LocalizedClientLink>
             <div className="relative flex justify-center">
               <button
                 onClick={toggleDropdown}

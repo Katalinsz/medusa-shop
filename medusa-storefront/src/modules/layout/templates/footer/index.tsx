@@ -8,9 +8,9 @@ export default async function Footer() {
 
   return (
     <footer className="bg-white text-left w-full mt-8">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 items-start" >
         {/* Logo */}
-        <div className="flex flex-col items-start space-y-4">
+        <div className="flex flex-col items-start space-y-4 items-start">
           <img
             className="w-32 md:w-48 lg:w-56"
             src="/images/logo.png"
@@ -25,12 +25,56 @@ export default async function Footer() {
             Knitted motif is a platform for knitting, engaging sharing, and
             community-driven projects.
           </p>
-          <LocalizedClientLink
-            href="/about"
-            className="text-gray-600 text-sm hover:underline"
-          >
-            About
-          </LocalizedClientLink>
+          <ul className="space-y-2">
+            <li>
+              <LocalizedClientLink
+                href="/content/about"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                About us
+              </LocalizedClientLink>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/contact-us"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Contact us
+              </LocalizedClientLink>
+            </li>
+          </ul>
+        </div>
+
+        {/* Policies */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-[#12725c]">Policies</h2>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>
+              <LocalizedClientLink
+                href="/content/terms-and-conditions"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Terms and conditions
+              </LocalizedClientLink>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/privacy-policy"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Privacy Policy
+              </LocalizedClientLink>
+            </li>
+            
+            <li>
+              <LocalizedClientLink
+                href="/content/cookie-policy"
+                className="text-gray-600 text-sm hover:underline"
+              >
+                Cookie Policy
+              </LocalizedClientLink>
+            </li>
+          </ul>
         </div>
 
         {/* Social */}
@@ -55,6 +99,26 @@ export default async function Footer() {
                 className="hover:text-[#12725c] transition-colors"
               >
                 Instagram
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://se.pinterest.com/source/knittedforyou.se"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#12725c] transition-colors"
+              >
+                Pinterest
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.etsy.com/shop/KnittersDesign"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#12725c] transition-colors"
+              >
+                Etsy shop
               </a>
             </li>
           </ul>
