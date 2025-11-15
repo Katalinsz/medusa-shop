@@ -7,7 +7,7 @@ export default defineConfig({
   name: 'default',
   title: 'Knitted For You CMS',
 
-  projectId: 'xgayegya',
+  projectId: '2sjic9jz',
   dataset: 'production',
 
   plugins: [structureTool(), visionTool()],
