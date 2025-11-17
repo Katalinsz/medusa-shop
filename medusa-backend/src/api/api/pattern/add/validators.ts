@@ -4,6 +4,8 @@ export const PostApiPatternAddSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   handle: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
   // default to published in the handler; allow override if sent
   status: z.enum(["draft", "published"]).optional(),
 

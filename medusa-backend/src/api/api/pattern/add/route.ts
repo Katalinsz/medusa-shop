@@ -20,10 +20,13 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     //accept images and thumbnail from the client
     images = [] as Array<string | { url: string; rank?: number; metadata?: Record<string, any> }>,
     thumbnail,
+    width,
+    height,
+    metadata = {},
   } = req.body
 
   // 1) Create product (published)
-  const product = await productModule.createProducts({ title, description, handle, status, thumbnail})
+  const product = await productModule.createProducts({ title, description, handle, status, thumbnail, width, height, metadata })
 
    // 5) Link to default sales channel so the Store API can see it
   const channels = await scModule.listSalesChannels({})
