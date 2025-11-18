@@ -30,7 +30,7 @@ const MotifRow: React.FC<MotifRowProps> = ({
       }`}
       onClick={handleClick}
     >
-      <div className="w-4 h-4 border border-gray-300 flex items-center justify-center text-xs font-medium bg-white mr-1">
+      <div className="w-4 h-4  flex items-center justify-center text-xs font-medium bg-white mr-1">
         {rowNr}
       </div>
 
