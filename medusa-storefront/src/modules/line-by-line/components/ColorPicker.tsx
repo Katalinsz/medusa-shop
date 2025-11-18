@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 
 interface ColorPickerProps {
   color: string
@@ -13,6 +13,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   ind,
 }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false)
+  const colorInputRef = useRef<HTMLInputElement>(null)
 
   const handleClick = () => {
     setDisplayColorPicker(!displayColorPicker)
@@ -26,6 +27,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
     onColorChange(e.target.value, ind)
   }
 
+  // Automatically click the color input when it becomes visible
+  useEffect(() => {
+    if (displayColorPicker && colorInputRef.current) {
+      colorInputRef.current.click()
+    }
+  }, [displayColorPicker])
+
   return (
     <div className="inline-block mr-2 relative">
       <div
@@ -37,6 +45,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
         <div className="absolute z-10 mt-1">
           <div className="fixed inset-0" onClick={handleClose} />
           <input
+            ref={colorInputRef}
             type="color"
             value={color}
             onChange={handleChange}
